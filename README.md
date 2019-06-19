@@ -31,6 +31,9 @@ Tools:
 - apktool ([Install Instructions](https://ibotpeaches.github.io/Apktool/install/))
 - apksigner (Directory: `/Android/Sdk/build-tools/{version}`)
 
+Apk download:
+- [STube-1.0.0-rc.1.apk](https://github.com/bishop-shawn/STube/releases/download/v1.0.0-rc.1/STube-1.0.0-rc.1.apk)
+
 ### 1. Decode APK
 
 Decode `stube-app.apk` to `stube-app` directory.
