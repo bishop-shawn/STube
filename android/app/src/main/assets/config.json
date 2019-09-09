@@ -1,0 +1,17 @@
+{
+  "home_title": "STube",
+  "home_urls": [
+    "file:///android_asset/demo.html"
+  ],
+  "local_storage": "STubeDownload",
+  "launch_ad_image": "",
+  "launch_ad_link": "",
+  "ad_video_url": "",
+  "ad_video_link": "",
+  "color_theme": "#f13564",
+  "color_header": "#f13564",
+  "color_header_text": "#ffffff",
+  "color_bottom": "#ffffff",
+  "color_bottom_text": "#a1a1a1",
+  "color_bottom_text_active": "#000000"
+}

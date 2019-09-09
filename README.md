@@ -1,100 +1,131 @@
-# STube
+# Introduction
 
-The world’s first blockchain video DAPP open source project.
+This project only supports arm-based Android phones.
 
-## Introduction
+# Environment
 
-STube is the first application based on blockchain technology in the field of video. This is a real open platform for video content publishing. It allows all content creators to quickly and efficiently build their own blockchain-specific video DAPP, while supporting multiple digital currencies which could be used to purchase video content. It also provides basic operational strategies for your own distribution.
+Follow React Native Document to configure Environment.
 
-## Notice
+got to [react native get start](https://facebook.github.io/react-native/docs/getting-started), and choose `React Native CLI Quickstart`, select Development OS, select Target OS `Android`.
 
-- Min Supported Android Version: 6.0.0
 
-## Customization(First Stage)
+# Get start
 
-- App name & logo
-- Launch image
-- Main theme color, font color
-- The icons of bottom tab navigator
-- Advertisement image after launch, support both local file and url
-- External link opened by browser when advertisement image is touched
-- Home page webview, support native method to show the "Play or Download" dialog
-- Filter sensitive words when searching
+1. Clone project
 
-## Config Steps
-
-Environment require: 
-- JDK1.8
-- Android SDK
-
-Tools:
-- apktool ([Install Instructions](https://ibotpeaches.github.io/Apktool/install/))
-- apksigner (Directory: `/Android/Sdk/build-tools/{version}`)
-
-Apk download:
-- [STube-1.0.0-rc.1.apk](https://github.com/bishop-shawn/STube/releases/download/v1.0.0-rc.1/STube-1.0.0-rc.1.apk)
-
-### 1. Decode APK
-
-Decode `stube-app.apk` to `stube-app` directory.
-
+2. Install dependencies
 ```
-apktool d stube-app.apk
+npm install
 ```
 
-### 2. Edit Configuration & Replace Images
+# Migrating to AndroidX
 
-#### 1) Rename App Name
-Open `stube-app/res/values/strings.xml`, search `app_name`, replace the value to your preferred name.
+Replaces the original support library APIs with packages in the androidx namespace.
 
-#### 2) Config Home Page & Theme Color
-There are several configuration item in `stube-app/assets/config.json`:
-- `home_title`: The title of home page.
-- `home_urls`: A list of urls which is used to get html page through webview. The list means the program can request next url if previous one is not available.
-- `local_storage`: A directory stores download files for this app.
-- `launch_ad_image`: A url of image shows after app launch. If empty, the image is same with launch image.
-- `launch_ad_link`: A url of html can be opened with native browser when ad image is touched.
-- `color_theme`: Main color of the app.
-- `color_header`: The background color of page header.
-- `color_header_text`: The font color of page header.
-- `color_bottom`: The background color of bottom tab  navigator.
-- `color_bottom_text`: The font color of bottom tab navigator.
-- `color_bottom_text_active`: The font color bottom tab navigator when tab is active.
+Open `project/android` in Android Studio.
+Wait for sync finished。
+select all Packages, right click `Refactor` -> `Migrating to AndroidX`
 
-#### 3) Replace App Icon
-Go to `stube-app/res/`, replace `ic_launcher.png` icon which is located in `mipmap-hdpi`, `mipmap-mdpi`, `mipmap-xhdpi`, `mipmap-xxhdpi`, `mipmap-xxxhdpi` respectively.
+This may not migrate all references to AndroidX. You should go to `node_modules` folder, check follow imports.
 
-#### 4) Replace Images
-The images can be replace are located `stube-app/res/mipmap-hdpi`.
+```java
+  // react-native-background-job
+  - import android.support.**;
+  + import androidx.**;
+  // react-native-file-selector
+  - import android.support.v4.app.ActivityCompat;
+  + import androidx.core.app.ActivityCompat;
 
-### 3. Build APK
+  - import android.support.v4.content.ContextCompat;
+  + import androidx.core.content.ContextCompat;
+
+  - import android.support.v7.app.AppCompatActivity;
+  + import androidx.appcompat.app.AppCompatActivity;
+  // react-native-fs
+  - import android.support.**;
+  + import androidx.**;
+  // react-native-view-shot
+  - import android.support.**;
+  + import androidx.**;
 ```
-apktool b stube-app -o new-app.apk
+
+# Run debug
+
+```
+npm run debug
 ```
 
-### 4. Sign APK
-Go to `/Android/Sdk/build-tools/{version}`:
-```
-apksigner sign --ks path/to/stube.keystore --ks-key-alias koala-key-alias path/to/new-app.apk
-```
-The password is `koala-app`.
+# Pack
 
-## WebView API
+```
+cd ./android
+./gradlew assembleRelease
 
-Show "Download or Play" dialog:
-```javascript
-  var data = {
-    action: 'dialog',
-    name: 'AmazingVideo.mp4', // Full file name
-    url: 'magnet:?xt=urn:btih:3BF15D8F0D4863FC2291704398646832F', // Download link. These protocals are supported: HTTP/FTP/MAGNET/ED2K/THUNDER.
-    size: 1567663063, // File size, byte.
-  };
-  
-  // Call from javascript：
-  window.ReactNativeWebView.postMessage(JSON.stringify(data));
 ```
-The link which request a video/audio file will be download automaticly. 
-```html
-<a href=“http://.../AmazingVideo.mp4”>AmazingVideo</a>
+# Project construction
+
 ```
-`AmazingVideo.mp4` will be downloaded when this link is touched.
+├── index.js                // main file
+├── doc                     // basic doc
+├── package.json            // change your app's version
+├── build-instruction.md
+├── README.md
+├── android
+│   ├── app
+│   │   ├── build
+│   │   │   ├── outputs
+│   │   │   │   └── apk      // release APK folder
+│   │   ├── src
+│   │   │   └── main
+│   │   │       ├── AndroidManifest.xml
+│   │   │       ├── assets
+│   │   │       │   ├── ad.mp4          // player's default ad
+│   │   │       │   ├── blacklist.txt   // blacklist configutation(filter webview urls)
+│   │   │       │   ├── config.json     // local configurations
+│   │   │       │   ├── demo.html       // demo page for home webview
+│   │   │       │   ├── fonts
+│   │   │       │   └── start.png       // default image for the start ad.
+│   │   │       ├── java                // java code
+│   │   │       ├── res                 // resources (1)
+│   │   └── stube.keystore
+└── src
+    ├── App.js
+    ├── components          // Common component
+    ├── constant            // constant
+    ├── model               // type def
+    ├── pages               // all pages go here
+    │   ├── addTaskLink
+    │   ├── appQRCode
+    │   ├── download
+    │   ├── downloadRecords
+    │   ├── downloadSetting
+    │   ├── downloadingPlayer
+    │   ├── homeWebview           // home page(webview)
+    │   ├── mine                  // mine page
+    │   ├── popularize
+    │   ├── popularizeHistory
+    │   ├── scanBTFile
+    │   ├── search                // search page
+    │   ├── setting               // setting page(mine->setting)
+    │   ├── start
+    │   ├── vodPlayer
+    │   ├── watchRecords
+    │   └── webEntry
+    ├── redux               // redux
+    ├── resource            // resources (2)
+    ├── sdk
+    ├── service             // data acquirement
+    │   ├── backgroundService.js
+    │   ├── configService.js       // Merge remote and local configurations
+    │   ├── downloadService.js
+    │   ├── navigationService.js   // global navigation, can use any where
+    │   ├── searchRecordService.js
+    │   ├── searchTagsService.js
+    │   ├── storageService.js
+    │   ├── taskStatusService.js
+    │   └── watchRecordService.js
+    └── util
+        ├── baseUtil.js
+        ├── request.js
+        └── ...
+```
